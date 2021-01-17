@@ -26,6 +26,8 @@ public class GameManager : MonoBehaviour
     // resource gathering mode stuff
     public TextMeshProUGUI currentModeText;
 
+    public TextMeshProUGUI currentPoopNumText;
+    private int currentPoopNum;
     // Start is called before the first frame update
     void Start()
     {
@@ -42,6 +44,9 @@ public class GameManager : MonoBehaviour
 
         // initialize the game itself to start in extract mode
         resourceGatheringMode = ResourceGatheringMode.EXTRACT;
+
+        // in case for some reason the current number is not 0
+        currentPoopNumText.SetText(currentPoopNum.ToString());
     }
 
     // Update is called once per frame
@@ -92,5 +97,12 @@ public class GameManager : MonoBehaviour
             resourceGatheringMode = ResourceGatheringMode.SCAN;
             currentModeText.SetText("Scan");
         }
+    }
+
+    public void AddPoop(int numPoops)
+    {
+      
+        currentPoopNum += numPoops;
+        currentPoopNumText.SetText(currentPoopNum.ToString());
     }
 }
