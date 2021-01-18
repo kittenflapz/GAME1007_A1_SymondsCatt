@@ -28,6 +28,10 @@ public class GameManager : MonoBehaviour
 
     public TextMeshProUGUI currentPoopNumText;
     private int currentPoopNum;
+
+    private bool hasGameStarted;
+
+    public TileManager tileManager;
     // Start is called before the first frame update
     void Start()
     {
@@ -42,11 +46,14 @@ public class GameManager : MonoBehaviour
             obj.SetActive(false);
         }
 
+        hasGameStarted = false;
+
         // initialize the game itself to start in extract mode
         resourceGatheringMode = ResourceGatheringMode.EXTRACT;
 
         // in case for some reason the current number is not 0
         currentPoopNumText.SetText(currentPoopNum.ToString());
+
     }
 
     // Update is called once per frame
@@ -81,6 +88,12 @@ public class GameManager : MonoBehaviour
             {
                 obj.SetActive(true);
             }
+
+            if (!hasGameStarted)
+            {
+                tileManager.StartResourceGatheringMode();
+            }
+
         }
     }
 
@@ -101,7 +114,6 @@ public class GameManager : MonoBehaviour
 
     public void AddPoop(int numPoops)
     {
-      
         currentPoopNum += numPoops;
         currentPoopNumText.SetText(currentPoopNum.ToString());
     }
