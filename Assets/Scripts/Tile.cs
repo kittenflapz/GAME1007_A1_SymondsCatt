@@ -9,6 +9,12 @@ public class Tile : MonoBehaviour
     public SpriteRenderer spriteRenderer;
     public bool visible;
 
+
+    // i'm setting these during tilemap generation so as not to have to write a helper function to get coordinates in a 2d array
+    // it's inefficient probably
+    public int column;
+    public int row;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -17,7 +23,7 @@ public class Tile : MonoBehaviour
        // resourceAmount = ResourceAmount.NONE;
         UpdateColor();
         resourceAmount = ResourceAmount.NONE;
-        visible = true;
+        visible = false;
     }
 
     // Update is called once per frame
@@ -28,7 +34,13 @@ public class Tile : MonoBehaviour
 
     private void OnMouseUp()
     {
-        gameManager.AddPoop(1);
+        //  When the player clicks a tile in Scan Mode, it will display the resource underneath as well as those tiles that immediately surround it, for a total of 9 tiles.
+
+        if (gameManager.resourceGatheringMode == ResourceGatheringMode.SCAN)
+        {
+            visible = true;
+            UpdateColor();
+        }
     }
 
     public void UpdateColor()
@@ -56,5 +68,17 @@ public class Tile : MonoBehaviour
         {
             spriteRenderer.color = new Color(255, 255, 255, 255);
         }
+    }
+
+    public void SetColumnAndRow(int col, int ro)
+    {
+        column = col;
+        row = ro;
+    }
+
+    public void ScanMe()
+    {
+        visible = true;
+        UpdateColor();
     }
 }
