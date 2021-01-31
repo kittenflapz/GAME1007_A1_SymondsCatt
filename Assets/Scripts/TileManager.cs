@@ -55,7 +55,7 @@ public class TileManager : MonoBehaviour
                 nextTilePosition = new Vector3(nextTilePosition.x + 0.25f, nextTilePosition.y, nextTilePosition.z);
                 go.transform.parent = this.transform;
                 tileMap[i, j] = go;
-                go.GetComponent<Tile>().SetColumnAndRow(i, j);
+                go.GetComponent<Tile>().SetColumnAndRow(j, i);
             }
             nextTilePosition = new Vector3(startTilePosition.x, nextTilePosition.y + 0.25f, nextTilePosition.z);
         }
@@ -77,7 +77,6 @@ public class TileManager : MonoBehaviour
             // add max resources to this tile
             currentTile.resourceAmount = ResourceAmount.MAX;
             currentTile.UpdateColor();
-            Debug.Log(currentTile.resourceAmount);
             // send this info to function to populate surrounding tiles, deal with that logic there
             PopulateSurroundingTiles(randomRow, randomColumn);
         }
@@ -304,7 +303,7 @@ public class TileManager : MonoBehaviour
         int rowOfCentreTile = centreTile.row;
         int colOfCentreTile = centreTile.column;
 
-        Tile temp = new Tile();
+        Tile temp = centreTile;
 
         if (colOfCentreTile > 0)
         {
@@ -361,6 +360,72 @@ public class TileManager : MonoBehaviour
         {
             temp = tileMap[rowOfCentreTile - 1, colOfCentreTile + 1].GetComponent<Tile>();
             temp.ScanMe();
+        }
+    }
+
+    public void SuckResources(Tile centreTile)
+    {
+        centreTile.DegradeResource();
+
+        int rowOfCentreTile = centreTile.row;
+        int colOfCentreTile = centreTile.column;
+        Tile temp = centreTile;
+
+        if (colOfCentreTile > 0)
+        {
+            temp = tileMap[rowOfCentreTile, colOfCentreTile - 1].GetComponent<Tile>();
+            temp.DegradeResource();
+        }
+
+        // immediate right
+        if (colOfCentreTile < tileMapLength - 1)
+        {
+            temp = tileMap[rowOfCentreTile, colOfCentreTile + 1].GetComponent<Tile>();
+            temp.DegradeResource();
+        }
+
+        // immediate top
+        if (rowOfCentreTile < tileMapLength - 1)
+        {
+            temp = tileMap[rowOfCentreTile + 1, colOfCentreTile].GetComponent<Tile>();
+            temp.DegradeResource();
+        }
+
+        // immediate bottom
+        if (rowOfCentreTile > 0)
+        {
+            temp = tileMap[rowOfCentreTile - 1, colOfCentreTile].GetComponent<Tile>();
+            temp.DegradeResource();
+        }
+
+        // top right
+        if (rowOfCentreTile < (tileMapLength - 1) && colOfCentreTile < (tileMapLength - 1))
+        {
+            temp = tileMap[rowOfCentreTile + 1, colOfCentreTile + 1].GetComponent<Tile>();
+            temp.DegradeResource();
+        }
+
+        // top left
+        if (rowOfCentreTile < tileMapLength - 1 && colOfCentreTile > 0)
+        {
+            temp = tileMap[rowOfCentreTile + 1, colOfCentreTile - 1].GetComponent<Tile>();
+            temp.DegradeResource();
+        }
+
+
+        // bottom left
+        if (rowOfCentreTile > 0 && colOfCentreTile > 0)
+        {
+            temp = tileMap[rowOfCentreTile - 1, colOfCentreTile - 1].GetComponent<Tile>();
+            temp.DegradeResource();
+        }
+
+
+        // bottom right
+        if (rowOfCentreTile > 0 && colOfCentreTile < tileMapLength - 1)
+        {
+            temp = tileMap[rowOfCentreTile - 1, colOfCentreTile + 1].GetComponent<Tile>();
+            temp.DegradeResource();
         }
 
     }

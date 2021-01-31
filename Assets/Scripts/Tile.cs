@@ -5,6 +5,7 @@ using UnityEngine;
 public class Tile : MonoBehaviour
 {
     public GameManager gameManager;
+    public TileManager tileManager;
     public ResourceAmount resourceAmount = ResourceAmount.NONE;
     public SpriteRenderer spriteRenderer;
     public bool visible;
@@ -19,6 +20,7 @@ public class Tile : MonoBehaviour
     void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
+        tileManager = FindObjectOfType<TileManager>();
         spriteRenderer = GetComponent<SpriteRenderer>();
        // resourceAmount = ResourceAmount.NONE;
         UpdateColor();
@@ -38,8 +40,20 @@ public class Tile : MonoBehaviour
 
         if (gameManager.resourceGatheringMode == ResourceGatheringMode.SCAN)
         {
-            visible = true;
-            UpdateColor();
+            if (gameManager.scansLeft > 0)
+            {
+                tileManager.ScanTileAndSurroundingTiles(this);
+                gameManager.DecrementScans();
+            }
+        }
+        else
+        {
+            if (gameManager.scoopsLeft > 0)
+            {
+                tileManager.SuckResources(this);
+                gameManager.AddResources(resourceAmount);
+                gameManager.DecrementScoops();
+            }
         }
     }
 
@@ -79,6 +93,24 @@ public class Tile : MonoBehaviour
     public void ScanMe()
     {
         visible = true;
+        UpdateColor();
+    }
+
+    public void DegradeResource()
+    {
+        if (resourceAmount == ResourceAmount.MAX)
+        {
+            resourceAmount = ResourceAmount.HALF;
+        }
+        else if (resourceAmount == ResourceAmount.HALF)
+        {
+            resourceAmount = ResourceAmount.QUARTER;
+        }
+        else if (resourceAmount == ResourceAmount.QUARTER)
+        {
+            resourceAmount = ResourceAmount.NONE;
+        }
+
         UpdateColor();
     }
 }

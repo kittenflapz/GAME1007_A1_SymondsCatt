@@ -25,11 +25,19 @@ public class GameManager : MonoBehaviour
 
     // resource gathering mode stuff
     public TextMeshProUGUI currentModeText;
-
     public TextMeshProUGUI currentPoopNumText;
+    public TextMeshProUGUI finalPoopNumText;
+    public TextMeshProUGUI currentScansLeftText;
+    public TextMeshProUGUI currentScoopsLeftText;
+    public TextMeshProUGUI noScansLeftText;
+    public TextMeshProUGUI noScoopsLeftText;
+    public GameObject finalTextBackground;
+
     private int currentPoopNum;
 
     private bool hasGameStarted;
+    public int scansLeft;
+    public int scoopsLeft;
 
     public TileManager tileManager;
     // Start is called before the first frame update
@@ -37,6 +45,10 @@ public class GameManager : MonoBehaviour
     {
         // initialize to the start scene
         gameState = GameState.START;
+        scansLeft = 6;
+        scoopsLeft = 3;
+        currentScansLeftText.SetText(scansLeft.ToString());
+        currentScoopsLeftText.SetText(scoopsLeft.ToString());
         foreach (GameObject obj in startStateObjects)
         {
             obj.SetActive(true);
@@ -116,5 +128,48 @@ public class GameManager : MonoBehaviour
     {
         currentPoopNum += numPoops;
         currentPoopNumText.SetText(currentPoopNum.ToString());
+    }
+
+    public void DecrementScans()
+    {
+        scansLeft--;
+        currentScansLeftText.SetText(scansLeft.ToString());
+        if (scansLeft == 0)
+        {
+            noScansLeftText.gameObject.SetActive(true);
+        }
+    }
+
+    public void DecrementScoops()
+    {
+        scoopsLeft--;
+        currentScoopsLeftText.SetText(scoopsLeft.ToString());
+        if (scoopsLeft == 0)
+        {
+            noScoopsLeftText.gameObject.SetActive(true);
+            finalTextBackground.SetActive(true);
+            finalPoopNumText.SetText(currentPoopNum.ToString());
+            
+        }
+    }
+
+    public void AddResources(ResourceAmount amount)
+    {
+
+        if (amount == ResourceAmount.MAX)
+        {
+            // add loads
+            AddPoop(1000);
+        }
+        else if (amount == ResourceAmount.HALF)
+        {
+            // add half of that
+            AddPoop(500);
+        }
+        else if (amount == ResourceAmount.QUARTER)
+        {
+            // add half of THAT
+            AddPoop(250);
+        }
     }
 }
