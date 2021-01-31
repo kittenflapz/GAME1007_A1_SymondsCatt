@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public enum GameState {
     START,
@@ -107,6 +108,11 @@ public class GameManager : MonoBehaviour
             }
 
         }
+    }
+
+    public void RestartEverything()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
 
